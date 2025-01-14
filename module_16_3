@@ -5,15 +5,15 @@ app = FastAPI()
 
 users = {'1': 'Имя: Example, возраст: 18'}
 
-@app.get ('/')
+@app.get ('/users')
 async def get_all_users():
     return users
 
 @app.post('/user/{username}/{age}')
-async def create_user (user_name: Annotated[str, Path(min_length=5, max_length=20, description="Enter username", example="Oleg")],
+async def create_user (username: Annotated[str, Path(min_length=5, max_length=20, description="Enter username", example="Oleg")],
         age: int = Path(ge=18, le=120, description="Enter age", example=55)) -> dict:
     current_index = str(int(max(users, key=int)) + 1)
-    mess = f'Имя: {user_name}, возраст: {age}'
+    mess = f'Имя: {username}, возраст: {age}'
     users[current_index] = mess
     return f'User {current_index} is registered'
 
@@ -24,7 +24,7 @@ async def update_users(username: Annotated[str, Path(min_length=5, max_length=20
     users[user_id] = f'Имя: {username}, возраст: {age}'
     return f'User {user_id} is registered'
 
-@app.delete('user/{user_id}')
+@app.delete('/user/{user_id}')
 async def delete_user(user_id:str):
     users.pop(user_id)
     return f'{user_id} has been deleted'
